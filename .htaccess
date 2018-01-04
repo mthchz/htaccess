@@ -5,20 +5,28 @@
 
 Options -Indexes
 
-# BEGIN WordPress
 <IfModule mod_rewrite.c>
   RewriteEngine On
   RewriteBase /
+  
+  # WordPress
   RewriteRule ^index\.php$ - [L]
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteCond %{REQUEST_FILENAME} !-d
   RewriteRule . /index.php [L]
-</IfModule>
-# END WordPress
+  
+  # To redirect all users WITH the 'www.' prefix
+  #RewriteCond %{HTTP_HOST} !^www\. [NC]
+  #RewriteRule ^(.*)$ http://www.%{HTTP_HOST}/$1 [R=301,L]
 
-# To redirect all users to access the site WITH the 'www.' prefix,
-#RewriteCond %{HTTP_HOST} ^site\.fr$ [NC]
-#RewriteRule ^(.*)$ http://www.site.fr/$1 [L,R=301]
+  # To redirect all users WITHOUT the 'www.' prefix
+  #RewriteCond %{HTTP_HOST} ^www\.(.*)$ [NC]
+  #RewriteRule ^(.*)$ https://%1/$1 [R=301,L]
+
+  # Redirect to https
+  #RewriteCond %{HTTPS} !=on
+  #RewriteRule .* https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
+</IfModule>
 
 # add svg support
 AddType image/svg+xml svg svgz
