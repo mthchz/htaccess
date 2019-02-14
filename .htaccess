@@ -143,24 +143,24 @@ AddEncoding gzip svgz
   </FilesMatch>
 </IfModule>
 
-# BEGIN Cache-Control Headers : 604800s > 1 week
+# BEGIN Cache-Control Headers : 2629800s > 1 month
 <IfModule mod_headers.c>
 
         <FilesMatch "\\.(js|css|jpg|png|jpeg|gif|css)$">
-        Header set Cache-Control "max-age=604800, public"
+        Header set Cache-Control "max-age=2629800, public"
 
         # Unset cookies for static content
         RequestHeader unset Cookie
         Header unset Set-Cookie
-        Header set Cache-Control "max-age=604800"
+        Header set Cache-Control "max-age=2629800"
     </FilesMatch>
 
     <FilesMatch "\.(js)$">
-        Header set Cache-Control "max-age=604800, private"
+        Header set Cache-Control "max-age=2629800, private"
     </FilesMatch>
 
     <filesMatch "\.(html|htm)$">
-        Header set Cache-Control "max-age=604800, public"
+        Header set Cache-Control "max-age=2629800, public"
     </filesMatch>
 
     # Disable caching for scripts and other dynamic files
@@ -169,3 +169,19 @@ AddEncoding gzip svgz
     </FilesMatch>
 </IfModule>
 # END Cache-Control Headers
+
+# BEGIN Security
+<IfModule mod_headers.c>
+    # CSP (https://www.html5rocks.com/en/tutorials/security/content-security-policy/)
+    Header set Content-Security-Policy "script-src 'self' //www.google-analytics.com; script-src 'self' https://opt-out.ferank.eu;style-src 'self' https://opt-out.ferank.eu"
+
+    # Block clickjacking
+    Header always set X-FRAME-OPTIONS "DENY"
+
+    # Block XSS
+    Header always set X-XSS-Protection "1; mode=block"
+
+    # Disable MIME Sniffing
+    Header always set X-Content-Type-Options "nosniff"
+</IfModule>
+# END Security
